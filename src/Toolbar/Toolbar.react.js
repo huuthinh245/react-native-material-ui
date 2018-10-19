@@ -9,6 +9,7 @@ import CenterElement from './CenterElement.react';
 import RightElement from './RightElement.react';
 import isFunction from '../utils/isFunction';
 import withTheme from '../styles/withTheme';
+import IconToggle from '../IconToggle';
 
 const propTypes = {
   /**
@@ -61,7 +62,7 @@ const propTypes = {
     icon: PropTypes.string,
   }),
   /**
-   * You can override any style for the component via this prop
+   * You can overide any style for the component via this prop
    */
   style: PropTypes.shape({
     container: ViewPropTypes.style,
@@ -81,6 +82,7 @@ const propTypes = {
    * Wether or not the Toolbar should show
    */
   hidden: PropTypes.bool,
+  showIconSearch: PropTypes.bool,
   /**
    * Called when centerElement was pressed.
    * TODO: better to rename to onCenterElementPress
@@ -147,6 +149,7 @@ const defaultProps = {
   centerElement: null,
   leftElement: null,
   onLeftElementPress: null,
+  showIconSearch: true,
   size: 24,
 };
 
@@ -310,7 +313,6 @@ class Toolbar extends PureComponent {
 
   onLayout = event => {
     const { width, height } = event.nativeEvent.layout;
-
     // pythagorean
     const radius = Math.sqrt(Math.pow(height, 2) + Math.pow(width, 2)); // eslint-disable-line
     let diameter = radius * 2;
@@ -413,7 +415,6 @@ class Toolbar extends PureComponent {
         ]}
       />
     );
-
     const bgDefault = (
       <Animated.View
         key="defaultBackground"
@@ -440,8 +441,7 @@ class Toolbar extends PureComponent {
   };
 
   render() {
-    const { onLeftElementPress, onPress, onRightElementPress } = this.props;
-
+    const { onLeftElementPress, onPress, onRightElementPress, showIconSearch } = this.props;
     const { isSearchActiveInternal, searchValue, positionValue } = this.state;
     // TODO: move out from render method
     const styles = getStyles(this.props);
@@ -461,6 +461,16 @@ class Toolbar extends PureComponent {
           isSearchActive={isSearchActiveInternal}
           onSearchClose={this.onSearchCloseRequested}
         />
+        {!isSearchActiveInternal && showIconSearch &&
+          <IconToggle
+            key="searchIcon"
+            name={'search'}
+            color="white"
+            size={24}
+            // style={flattenRightElement}
+            onPress={this.onSearchPressed}
+          />
+        }
         <CenterElement
           {...this.props}
           onPress={onPress}
@@ -468,14 +478,24 @@ class Toolbar extends PureComponent {
           isSearchActive={isSearchActiveInternal}
           onSearchTextChange={this.onSearchTextChanged}
         />
-        <RightElement
+        {/* <RightElement
           {...this.props}
           searchValue={searchValue}
           isSearchActive={isSearchActiveInternal}
           onSearchPress={this.onSearchPressed}
           onSearchClearRequest={this.onSearchClearRequested}
           onRightElementPress={onRightElementPress}
-        />
+        /> */}
+        {searchValue.length > 0 &&
+          <IconToggle
+            key="searchClear"
+            name="clear"
+            // color={flattenRightElement.color}
+            size={24}
+          // style={flattenRightElement}
+          onPress={this.onSearchClearRequested}
+          />
+        }
       </Animated.View>
     );
   }

@@ -154,7 +154,7 @@ class CenterElement extends PureComponent {
     } else if (typeof centerElement === 'string') {
       content = (
         <Text numberOfLines={1} style={styles.titleText}>
-          {centerElement}
+          {centerElement.toUpperCase()}
         </Text>
       );
     } else {

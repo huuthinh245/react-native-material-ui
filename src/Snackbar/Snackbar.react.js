@@ -112,18 +112,16 @@ class Snackbar extends PureComponent {
   }
 
   componentWillMount() {
-    const { bottomNavigation, visible } = this.props;
+    const { visible } = this.props;
 
     this.visibility = new Animated.Value(visible ? 1 : 0);
-
-    this.move(bottomNavigation);
   }
 
   componentWillReceiveProps(nextProps) {
     const { style, visible, bottomNavigation } = this.props;
 
     if (nextProps.style !== style) {
-      this.setState({ styles: getStyles(nextProps, this.context) });
+      this.setState({ styles: getStyles(this.props, this.context) });
     }
 
     if (nextProps.visible !== visible) {
@@ -233,8 +231,8 @@ class Snackbar extends PureComponent {
 
     const combinedStyle = [
       containerStyle,
-      { bottom: bottomPosition },
       styles.container,
+      { bottom: bottomPosition },
     ];
 
     return (
